@@ -1,2 +1,3 @@
-# Genz-Fact
+# Genz Facts
 Tried designing
+NOTE: open with browser
