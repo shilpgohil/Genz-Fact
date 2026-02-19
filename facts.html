@@ -1,0 +1,1067 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEN Z â€” DECODED</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ink: #0c0c0e;
+  --paper: #f2ede4;
+  --signal: #ff3f00;
+  --neon: #b8ff57;
+  --chrome: #c8c8c8;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--ink);
+  overflow: hidden;
+  cursor: none;
+}
+
+
+#cursor {
+  position: fixed;
+  width: 10px; height: 10px;
+  background: var(--signal);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.08s, width 0.2s, height 0.2s, background 0.2s;
+  mix-blend-mode: exclusion;
+}
+#cursor-ring {
+  position: fixed;
+  width: 40px; height: 40px;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.18s ease-out, width 0.2s, height 0.2s;
+}
+
+
+#bgCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+
+#app {
+  position: relative;
+  z-index: 10;
+  width: 100vw; height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr auto;
+}
+
+
+#topbar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 48px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.35em;
+  color: rgba(255,255,255,0.3);
+}
+#topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+.status-dot {
+  width: 7px; height: 7px;
+  background: var(--neon);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--neon);
+  animation: breathe 2s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.7); }
+}
+.topbar-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+}
+
+
+#left-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 0 0 48px;
+  overflow: hidden;
+}
+
+#fact-index-display {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(200px, 28vw, 380px);
+  line-height: 0.85;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.07);
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: opacity 0.4s;
+  user-select: none;
+}
+
+#category-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 2;
+}
+.cat-line {
+  width: 32px; height: 1px;
+  background: var(--signal);
+  flex-shrink: 0;
+}
+.cat-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+
+#main-fact-text {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(1.6rem, 3.2vw, 2.8rem);
+  line-height: 1.28;
+  color: #f0ece4;
+  max-width: 520px;
+  position: relative;
+  z-index: 2;
+  transition: opacity 0.35s, transform 0.35s;
+}
+#main-fact-text em {
+  font-style: italic;
+  color: var(--neon);
+}
+
+#fact-meta {
+  margin-top: 36px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  z-index: 2;
+}
+.meta-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-value {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  color: #fff;
+  line-height: 1;
+}
+.meta-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+.meta-divider {
+  width: 1px; height: 36px;
+  background: rgba(255,255,255,0.1);
+}
+
+
+#right-panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#visual-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+
+#geo-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+
+#central-visual {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+#stat-ring-wrap {
+  position: relative;
+  width: 240px; height: 240px;
+}
+#ring-svg {
+  width: 100%; height: 100%;
+  transform: rotate(-90deg);
+}
+.ring-track { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 2; }
+.ring-fill {
+  fill: none;
+  stroke: var(--neon);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 691;
+  stroke-dashoffset: 691;
+  filter: drop-shadow(0 0 8px var(--neon));
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.23, 1, 0.32, 1), stroke 0.5s;
+}
+.ring-fill-2 {
+  fill: none;
+  stroke: rgba(255,255,255,0.08);
+  stroke-width: 1;
+  stroke-dasharray: 691;
+  stroke-dashoffset: 0;
+}
+
+#ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+#ring-pct {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.8rem;
+  color: #fff;
+  line-height: 1;
+  transition: opacity 0.3s;
+}
+#ring-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+
+
+#ticker {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 40px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
+}
+#ticker-inner {
+  display: flex;
+  gap: 0;
+  white-space: nowrap;
+  animation: tickerScroll 35s linear infinite;
+}
+@keyframes tickerScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.ticker-item {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  padding: 0 40px;
+}
+.ticker-item span {
+  color: var(--signal);
+  margin-right: 40px;
+}
+
+
+#bottombar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 48px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+
+#progress-track {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex: 1;
+  max-width: 480px;
+}
+.seg {
+  height: 2px;
+  flex: 1;
+  background: rgba(255,255,255,0.08);
+  border-radius: 1px;
+  overflow: hidden;
+  position: relative;
+}
+.seg.active .seg-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--neon);
+  box-shadow: 0 0 6px var(--neon);
+  animation: segFill 10s linear forwards;
+}
+.seg.done .seg-fill {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.25);
+}
+@keyframes segFill {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+
+#nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.nav-btn {
+  width: 42px; height: 42px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  border-radius: 50%;
+  cursor: none;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+.nav-btn:hover {
+  border-color: var(--neon);
+  color: var(--neon);
+  box-shadow: 0 0 20px rgba(184,255,87,0.2);
+}
+.nav-btn svg { width: 14px; height: 14px; }
+
+#fact-counter-display {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.3rem;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.25);
+  min-width: 80px;
+  text-align: center;
+}
+
+
+.panel-out { animation: panelOut 0.35s ease forwards; }
+.panel-in  { animation: panelIn 0.35s ease forwards; }
+@keyframes panelOut {
+  to { opacity: 0; transform: translateY(20px); }
+}
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+#panel-divider {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%; width: 1px;
+  background: rgba(255,255,255,0.05);
+  z-index: 9;
+}
+
+
+#noise {
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.028;
+  pointer-events: none;
+  z-index: 100;
+  mix-blend-mode: overlay;
+}
+
+
+.crosshair {
+  position: absolute;
+  width: 20px; height: 20px;
+  pointer-events: none;
+}
+.crosshair::before, .crosshair::after {
+  content: '';
+  position: absolute;
+  background: rgba(255,255,255,0.15);
+}
+.crosshair::before { width: 1px; height: 100%; left: 50%; }
+.crosshair::after  { width: 100%; height: 1px; top: 50%; }
+
+</style>
+</head>
+<body>
+
+<div id="noise"></div>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<canvas id="bgCanvas"></canvas>
+
+<div id="panel-divider"></div>
+
+<div id="app">
+  
+  <div id="topbar">
+    <div class="logo">GEN&nbsp;Z&nbsp;&mdash;&nbsp;DECODED</div>
+    <div id="topbar-right">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="status-dot"></div>
+        <span class="topbar-label">Live Stream</span>
+      </div>
+      <span class="topbar-label" id="clock">00:00:00</span>
+    </div>
+  </div>
+
+  
+  <div id="left-panel">
+    <div id="fact-index-display">01</div>
+
+    <div id="category-badge">
+      <div class="cat-line"></div>
+      <div class="cat-text" id="cat-text">Culture</div>
+    </div>
+
+    <div id="main-fact-text">Loading fact...</div>
+
+    <div id="fact-meta">
+      <div class="meta-stat">
+        <div class="meta-value" id="meta-val1">â€”</div>
+        <div class="meta-label" id="meta-lab1">Stat</div>
+      </div>
+      <div class="meta-divider"></div>
+      <div class="meta-stat">
+        <div class="meta-value" id="meta-val2">â€”</div>
+        <div class="meta-label" id="meta-lab2">Stat</div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div id="right-panel">
+    <canvas id="visual-canvas"></canvas>
+
+    <svg id="geo-svg" viewBox="0 0 600 500" preserveAspectRatio="xMidYMid slice">
+      
+      <line x1="0" y1="120" x2="600" y2="380" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+      <line x1="0" y1="250" x2="600" y2="250" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+      <line x1="300" y1="0" x2="300" y2="500" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+      <circle cx="300" cy="250" r="200" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="1"/>
+      <circle cx="300" cy="250" r="150" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="1"/>
+      <polygon id="hex" points="300,80 465,172.5 465,327.5 300,420 135,327.5 135,172.5"
+               fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+    </svg>
+
+    <div id="central-visual">
+      <div id="stat-ring-wrap">
+        <svg id="ring-svg" viewBox="0 0 220 220">
+          <circle class="ring-track" cx="110" cy="110" r="110"/>
+          <circle class="ring-fill-2" cx="110" cy="110" r="110"/>
+          <circle class="ring-fill" id="ringFill" cx="110" cy="110" r="110"/>
+          
+          <g id="ticks"></g>
+        </svg>
+        <div id="ring-center">
+          <div id="ring-pct">â€”</div>
+          <div id="ring-sub">of gen z</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="crosshair" style="top:40px;right:40px"></div>
+    <div class="crosshair" style="bottom:60px;left:40px"></div>
+
+    
+    <div id="ticker">
+      <div id="ticker-inner"></div>
+    </div>
+  </div>
+
+  
+  <div id="bottombar">
+    <div id="progress-track"></div>
+    <div id="nav-buttons">
+      <div id="fact-counter-display">01 / 20</div>
+      <button class="nav-btn" id="prevBtn" title="Previous">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="nav-btn" id="nextBtn" title="Next">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 6 15 12 9 18"/></svg>
+      </button>
+      <button class="nav-btn" id="pauseBtn" title="Pause">
+        <svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const facts = [
+  {
+    category: "Screen Time",
+    text: "Gen Z spends more time on screens each day than they spend sleeping â€” an average of <em>9 hours</em> of daily digital exposure.",
+    stat: 91, statLabel: "use phones hourly",
+    meta1: { val: "9h", label: "Daily Screen Time" },
+    meta2: { val: "6.5h", label: "Avg Sleep" },
+    color: "#ff3f00",
+    ticker: "Screen time up 40% since 2019 â€¢ Gen Z checks their phone 150Ã— per day â€¢ Sleep deprivation at historic highs"
+  },
+  {
+    category: "Mental Health",
+    text: "<em>73%</em> of Gen Z report feeling alone sometimes or always â€” making them the loneliest generation in recorded history.",
+    stat: 73, statLabel: "report loneliness",
+    meta1: { val: "73%", label: "Feel Lonely" },
+    meta2: { val: "3Ã—", label: "vs Boomers" },
+    color: "#b8ff57",
+    ticker: "Therapy usage up 65% since 2019 â€¢ Mental health app market valued at $6.2B â€¢ Gen Z normalizes therapy like no generation before"
+  },
+  {
+    category: "Creator Economy",
+    text: "Over <em>50% of Gen Z</em> actively creates content online. The creator economy isn't a side hustle â€” it's their primary career ambition.",
+    stat: 54, statLabel: "create content",
+    meta1: { val: "$250B", label: "Creator Economy" },
+    meta2: { val: "50%+", label: "Are Creators" },
+    color: "#ff9500",
+    ticker: "1 in 4 Gen Z wants to be a full-time creator â€¢ YouTube pays out $30B+ annually â€¢ TikTok replaces the record label"
+  },
+  {
+    category: "Finance",
+    text: "Gen Z is simultaneously the <em>most financially stressed</em> and most financially literate generation â€” 73% cite money as their #1 stressor.",
+    stat: 73, statLabel: "financially stressed",
+    meta1: { val: "73%", label: "Money Stressed" },
+    meta2: { val: "25%", label: "Own Homes" },
+    color: "#ff3f00",
+    ticker: "Student debt crisis hits Gen Z hardest â€¢ Crypto adoption highest among under-25s â€¢ 'Loud budgeting' goes viral on TikTok"
+  },
+  {
+    category: "Gaming",
+    text: "<em>81% of Gen Z</em> identifies as a gamer. Gaming is not a hobby â€” it is their primary social infrastructure and cultural language.",
+    stat: 81, statLabel: "identify as gamers",
+    meta1: { val: "23h", label: "Weekly Play" },
+    meta2: { val: "$200B", label: "Market Size" },
+    color: "#b8ff57",
+    ticker: "Esports now surpasses NBA viewership among under-30s â€¢ Roblox has more users than Netflix â€¢ Gaming is Gen Z's social network"
+  },
+  {
+    category: "Identity",
+    text: "Gen Z is the most LGBTQ+ identifying generation ever recorded â€” approximately <em>1 in 5</em> identify outside of heterosexual or binary norms.",
+    stat: 20, statLabel: "identify as LGBTQ+",
+    meta1: { val: "1 in 5", label: "LGBTQ+" },
+    meta2: { val: "72%", label: "Are Allies" },
+    color: "#d966ff",
+    ticker: "Non-binary identification up 400% in a decade â€¢ Gen Z drives progressive social policy shifts â€¢ 'They/them' normalized in Gen Z workplaces"
+  },
+  {
+    category: "Environment",
+    text: "<em>72% of Gen Z</em> will actively choose brands based on environmental commitment â€” and 73% will pay a premium for sustainable products.",
+    stat: 72, statLabel: "choose eco-brands",
+    meta1: { val: "72%", label: "Choose Eco Brands" },
+    meta2: { val: "73%", label: "Pay Premium" },
+    color: "#b8ff57",
+    ticker: "Gen Z drives $150B in sustainable spending â€¢ Fast fashion boycotts hit brand revenue â€¢ Climate anxiety affects 68% of under-25s"
+  },
+  {
+    category: "Attention & Focus",
+    text: "Gen Z processes information in <em>8-second windows</em> â€” not because they're less intelligent, but because they've been trained by infinite-scroll algorithms.",
+    stat: 8, statLabel: "second attention window",
+    meta1: { val: "8 sec", label: "Attention Span" },
+    meta2: { val: "âˆž", label: "Tabs Open" },
+    color: "#ff3f00",
+    ticker: "Multitasking ability exceeds all prior generations â€¢ Short-form video dominates all content formats â€¢ TikTok brain is real â€” and it's adaptive"
+  },
+  {
+    category: "Work Culture",
+    text: "Gen Z switches jobs <em>2Ã— more</em> than Millennials at the same age. They invented 'quiet quitting' and they'll invent whatever comes next.",
+    stat: 68, statLabel: "want flexible work",
+    meta1: { val: "2Ã—", label: "Job Switches" },
+    meta2: { val: "68%", label: "Demand Flex" },
+    color: "#ff9500",
+    ticker: "Remote work is non-negotiable for 68% of Gen Z â€¢ Four-day work week support highest among under-30s â€¢ 'Bare minimum Mondays' trending"
+  },
+  {
+    category: "Language",
+    text: "Gen Z has contributed over <em>1,000 new words</em> to the cultural lexicon since 2015. 'Rizz', 'slay', 'no cap' â€” all their invention.",
+    stat: 78, statLabel: "use gen z slang daily",
+    meta1: { val: "1000+", label: "New Words" },
+    meta2: { val: "2015", label: "Origin Year" },
+    color: "#b8ff57",
+    ticker: "Oxford Dictionary added 27 Gen Z terms in 2023 â€¢ 'Rizz' named Word of the Year â€¢ Gen Z language enters corporate memos worldwide"
+  },
+  {
+    category: "Sobriety",
+    text: "Gen Z drinks <em>20% less alcohol</em> than Millennials at the same age. The sober-curious movement is the most significant cultural health shift in decades.",
+    stat: 20, statLabel: "reduction in drinking",
+    meta1: { val: "20%", label: "Less Drinking" },
+    meta2: { val: "34%", label: "Fully Sober" },
+    color: "#ff3f00",
+    ticker: "'Sober curious' trend accelerates â€¢ NA beverage market hits $11B â€¢ Gen Z chooses experiences over intoxication"
+  },
+  {
+    category: "AI & Future",
+    text: "<em>65% of Gen Z</em> believes AI will fundamentally reshape their careers â€” and unlike older generations, most of them are excited rather than afraid.",
+    stat: 65, statLabel: "embrace AI careers",
+    meta1: { val: "65%", label: "Embrace AI" },
+    meta2: { val: "4Ã—", label: "AI Adopters" },
+    color: "#b8ff57",
+    ticker: "Gen Z is 4Ã— more likely to use AI daily â€¢ Prompt engineering as a career path explodes â€¢ Claude, ChatGPT used in 70% of Gen Z coursework"
+  },
+  {
+    category: "Reading",
+    text: "Despite being digital natives, Gen Z is driving a massive physical book revival. <em>#BookTok</em> has generated over $100M in book sales.",
+    stat: 62, statLabel: "read physical books",
+    meta1: { val: "$100M+", label: "BookTok Sales" },
+    meta2: { val: "62%", label: "Buy Physical" },
+    color: "#ff9500",
+    ticker: "#BookTok has 200B+ views on TikTok â€¢ Independent bookstore openings hit 15-year high â€¢ Literary fiction makes unexpected comeback"
+  },
+  {
+    category: "Diversity",
+    text: "Gen Z is the most racially and ethnically diverse generation in United States history â€” <em>nearly half</em> identify as a racial or ethnic minority.",
+    stat: 48, statLabel: "are minorities",
+    meta1: { val: "48%", label: "Minority ID" },
+    meta2: { val: "2045", label: "Majority-Minority US" },
+    color: "#d966ff",
+    ticker: "US Census projects majority-minority nation by 2045 â€¢ Gen Z diversity reshaping brand and media strategy â€¢ Code-switching discussions go mainstream"
+  },
+  {
+    category: "Sleep",
+    text: "Gen Z averages just <em>6.5 hours</em> of sleep per night â€” the lowest of any generation ever measured. Blue light, anxiety, and doomscrolling are the culprits.",
+    stat: 63, statLabel: "sleep-deprived",
+    meta1: { val: "6.5h", label: "Avg Sleep" },
+    meta2: { val: "63%", label: "Deprived" },
+    color: "#4466ff",
+    ticker: "Sleep deprivation costs US economy $411B annually â€¢ 'Bed rotting' as a trend is a symptom of mass burnout â€¢ Melatonin is Gen Z's most purchased supplement"
+  },
+  {
+    category: "Entrepreneurship",
+    text: "Gen Z has produced more <em>self-made millionaires under 30</em> than any previous generation. The barrier to building wealth online has essentially collapsed.",
+    stat: 54, statLabel: "want to be founders",
+    meta1: { val: "54%", label: "Want Startups" },
+    meta2: { val: "18", label: "Avg Founder Age" },
+    color: "#ff9500",
+    ticker: "Teen millionaires via YouTube, Shopify, and TikTok â€¢ Side hustle culture normalized â€¢ 'Day in my life' videos as business pitches"
+  },
+  {
+    category: "Politics",
+    text: "Gen Z turned out in historic numbers in recent elections â€” and they are the <em>most progressive</em> generation on social issues in polling history.",
+    stat: 50, statLabel: "voted in last election",
+    meta1: { val: "50%", label: "Voter Turnout" },
+    meta2: { val: "2Ã—", label: "vs Gen X at same age" },
+    color: "#ff3f00",
+    ticker: "Gen Z flipped key senate seats in 2022 â€¢ Social media is their primary news source â€¢ Climate and abortion rights top Gen Z voting issues"
+  },
+  {
+    category: "Music",
+    text: "TikTok has completely replaced traditional radio and even Spotify as the <em>#1 music discovery platform</em> for Gen Z. A 15-second clip can create a #1 hit overnight.",
+    stat: 75, statLabel: "discover music via TikTok",
+    meta1: { val: "75%", label: "TikTok Discovery" },
+    meta2: { val: "15 sec", label: "To Go Viral" },
+    color: "#b8ff57",
+    ticker: "Artists now make TikToks before albums â€¢ 'Coastal cowgirl', 'hyperpop', 'bedroom pop' all TikTok-born genres â€¢ Record labels scout TikTok exclusively"
+  },
+  {
+    category: "Pets",
+    text: "Gen Z is the most pet-devoted generation in history â€” billions are spent on pet healthcare, clothing, and therapy. They coined <em>'pet parent'</em> as an identity.",
+    stat: 76, statLabel: "have pets",
+    meta1: { val: "76%", label: "Have Pets" },
+    meta2: { val: "$150B", label: "Pet Industry" },
+    color: "#ff9500",
+    ticker: "Pet mental health services up 400% â€¢ Dog-friendly offices now a recruitment tool â€¢ Pet insurance adoption highest among under-30s"
+  },
+  {
+    category: "Communication",
+    text: "Receiving an unexpected phone call is, for Gen Z, a minor social <em>emergency</em>. They process 90% of communication through text, memes, and voice notes.",
+    stat: 90, statLabel: "prefer text over calls",
+    meta1: { val: "90%", label: "Text > Call" },
+    meta2: { val: "âš¡", label: "Response expected" },
+    color: "#b8ff57",
+    ticker: "Voice notes replace phone calls among under-25s â€¢ Memes are a primary emotional language â€¢ 'Read receipts' are a source of social anxiety"
+  },
+];
+
+let current = 0;
+let paused = false;
+let timer = null;
+let animFrame = null;
+
+const bgCanvas = document.getElementById('bgCanvas');
+const bctx = bgCanvas.getContext('2d');
+let bw, bh;
+let time = 0;
+
+function resizeBG() {
+  bw = bgCanvas.width = window.innerWidth;
+  bh = bgCanvas.height = window.innerHeight;
+}
+resizeBG();
+window.addEventListener('resize', resizeBG);
+
+const noisePoints = Array.from({ length: 6 }, (_, i) => ({
+  x: (i % 3) * 0.4 + 0.1,
+  y: Math.floor(i / 3) * 0.6 + 0.2,
+  vx: (Math.random() - 0.5) * 0.0003,
+  vy: (Math.random() - 0.5) * 0.0003,
+  r: 300 + Math.random() * 200,
+}));
+
+let currentColor = { r: 255, g: 63, b: 0 };
+let targetColor  = { r: 255, g: 63, b: 0 };
+
+function lerpColor(a, b, t) {
+  return {
+    r: a.r + (b.r - a.r) * t,
+    g: a.g + (b.g - a.g) * t,
+    b: a.b + (b.b - a.b) * t
+  };
+}
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return { r, g, b };
+}
+
+function drawBG() {
+  bctx.clearRect(0, 0, bw, bh);
+  bctx.fillStyle = '#0c0c0e';
+  bctx.fillRect(0, 0, bw, bh);
+
+  currentColor = lerpColor(currentColor, targetColor, 0.015);
+
+  time += 0.004;
+  noisePoints.forEach((p, i) => {
+    p.x += p.vx + Math.sin(time + i * 1.3) * 0.0002;
+    p.y += p.vy + Math.cos(time + i * 0.9) * 0.0002;
+    if (p.x < 0 || p.x > 1) p.vx *= -1;
+    if (p.y < 0 || p.y > 1) p.vy *= -1;
+
+    const px = p.x * bw, py = p.y * bh;
+    const { r, g, b } = currentColor;
+    const opacity = i < 2 ? 0.06 : 0.03;
+    const grad = bctx.createRadialGradient(px, py, 0, px, py, p.r);
+    grad.addColorStop(0, `rgba(${r},${g},${b},${opacity})`);
+    grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+    bctx.fillStyle = grad;
+    bctx.fillRect(0, 0, bw, bh);
+  });
+
+  const vig = bctx.createRadialGradient(bw/2, bh/2, bh*0.2, bw/2, bh/2, bh*0.9);
+  vig.addColorStop(0, 'rgba(0,0,0,0)');
+  vig.addColorStop(1, 'rgba(0,0,0,0.6)');
+  bctx.fillStyle = vig;
+  bctx.fillRect(0, 0, bw, bh);
+
+  animFrame = requestAnimationFrame(drawBG);
+}
+drawBG();
+
+const vCanvas = document.getElementById('visual-canvas');
+const vctx = vCanvas.getContext('2d');
+let vw, vh;
+
+function resizeVC() {
+  const panel = document.getElementById('right-panel');
+  vw = vCanvas.width = panel.offsetWidth;
+  vh = vCanvas.height = panel.offsetHeight;
+}
+
+let particles = [];
+const PARTICLE_COUNT = 90;
+
+function initParticles() {
+  particles = [];
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
+    particles.push({
+      x: Math.random() * vw,
+      y: Math.random() * vh,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      size: Math.random() * 1.2 + 0.3,
+      opacity: Math.random() * 0.5 + 0.1,
+      life: Math.random() * Math.PI * 2,
+    });
+  }
+}
+
+let vtime = 0;
+let vColor = '#ff3f00';
+
+function drawParticles() {
+  vctx.clearRect(0, 0, vw, vh);
+  vtime += 0.008;
+
+  const maxDist = 100;
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < maxDist) {
+        const alpha = (1 - dist / maxDist) * 0.12;
+        vctx.strokeStyle = vColor.replace(')', `,${alpha})`).replace('rgb', 'rgba').replace('#', '');
+        const hexC = vColor;
+        const rC = parseInt(hexC.slice(1,3),16);
+        const gC = parseInt(hexC.slice(3,5),16);
+        const bC = parseInt(hexC.slice(5,7),16);
+        vctx.strokeStyle = `rgba(${rC},${gC},${bC},${alpha})`;
+        vctx.lineWidth = 0.5;
+        vctx.beginPath();
+        vctx.moveTo(particles[i].x, particles[i].y);
+        vctx.lineTo(particles[j].x, particles[j].y);
+        vctx.stroke();
+      }
+    }
+  }
+
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.life += 0.02;
+    if (p.x < 0) p.x = vw;
+    if (p.x > vw) p.x = 0;
+    if (p.y < 0) p.y = vh;
+    if (p.y > vh) p.y = 0;
+
+    const popa = (Math.sin(p.life) * 0.3 + 0.5) * p.opacity;
+    const rC = parseInt(vColor.slice(1,3),16);
+    const gC = parseInt(vColor.slice(3,5),16);
+    const bC = parseInt(vColor.slice(5,7),16);
+    vctx.fillStyle = `rgba(${rC},${gC},${bC},${popa})`;
+    vctx.beginPath();
+    vctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    vctx.fill();
+  });
+
+  requestAnimationFrame(drawParticles);
+}
+
+window.addEventListener('resize', () => { resizeVC(); initParticles(); });
+
+function buildTicks() {
+  const g = document.getElementById('ticks');
+  g.innerHTML = '';
+  for (let i = 0; i < 60; i++) {
+    const angle = (i / 60) * Math.PI * 2 - Math.PI / 2;
+    const isMajor = i % 5 === 0;
+    const r1 = 100, r2 = isMajor ? 94 : 97;
+    const x1 = 110 + r1 * Math.cos(angle);
+    const y1 = 110 + r1 * Math.sin(angle);
+    const x2 = 110 + r2 * Math.cos(angle);
+    const y2 = 110 + r2 * Math.sin(angle);
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+    line.setAttribute('stroke', `rgba(255,255,255,${isMajor ? 0.15 : 0.05})`);
+    line.setAttribute('stroke-width', isMajor ? 1 : 0.5);
+    g.appendChild(line);
+  }
+}
+buildTicks();
+
+function buildSegments() {
+  const track = document.getElementById('progress-track');
+  track.innerHTML = '';
+  facts.forEach((_, i) => {
+    const seg = document.createElement('div');
+    seg.className = 'seg';
+    seg.id = `seg-${i}`;
+    const fill = document.createElement('div');
+    fill.className = 'seg-fill';
+    seg.appendChild(fill);
+    track.appendChild(seg);
+  });
+}
+buildSegments();
+
+function buildTicker(text) {
+  const inner = document.getElementById('ticker-inner');
+  const items = text.split('â€¢');
+  let html = '';
+  for (let d = 0; d < 2; d++) {
+    items.forEach(item => {
+      html += `<div class="ticker-item"><span>â—†</span>${item.trim()}</div>`;
+    });
+  }
+  inner.innerHTML = html;
+}
+function animateRing(targetPct, color) {
+  const circumference = 2 * Math.PI * 110;
+  const offset = circumference - (targetPct / 100) * circumference;
+  const fill = document.getElementById('ringFill');
+  fill.style.stroke = color;
+  fill.style.filter = `drop-shadow(0 0 8px ${color})`;
+  fill.style.strokeDashoffset = offset;
+}
+
+function showFact(idx) {
+  const f = facts[idx];
+
+  targetColor = hexToRgb(f.color);
+  vColor = f.color;
+
+  const leftEls = ['main-fact-text', 'category-badge', 'fact-meta'];
+
+  document.getElementById('main-fact-text').style.opacity = '0';
+  document.getElementById('main-fact-text').style.transform = 'translateY(16px)';
+
+  setTimeout(() => {
+    document.getElementById('cat-text').textContent = f.category;
+    const textEl = document.getElementById('main-fact-text');
+    textEl.innerHTML = f.text;
+    textEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    textEl.style.opacity = '1';
+    textEl.style.transform = 'translateY(0)';
+
+    const idxEl = document.getElementById('fact-index-display');
+    idxEl.textContent = String(idx + 1).padStart(2, '0');
+    idxEl.style.webkitTextStroke = `1px ${f.color}20`;
+
+    document.getElementById('meta-val1').textContent = f.meta1.val;
+    document.getElementById('meta-lab1').textContent = f.meta1.label;
+    document.getElementById('meta-val2').textContent = f.meta2.val;
+    document.getElementById('meta-lab2').textContent = f.meta2.label;
+
+    document.getElementById('fact-counter-display').textContent =
+      `${String(idx+1).padStart(2,'0')} / ${String(facts.length).padStart(2,'0')}`;
+
+    animateRing(f.stat, f.color);
+    document.getElementById('ring-pct').textContent = f.stat + '%';
+
+    buildTicker(f.ticker);
+  }, 200);
+
+  document.querySelectorAll('.seg').forEach((s, i) => {
+    s.className = 'seg';
+    const fill = document.createElement('div');
+    fill.className = 'seg-fill';
+    if (i < idx) { s.className = 'seg done'; s.appendChild(fill); }
+    else if (i === idx) {
+      s.className = 'seg active';
+      const af = document.createElement('div');
+      af.className = 'seg-fill';
+      s.appendChild(af);
+    }
+  });
+}
+
+function startTimer() {
+  clearInterval(timer);
+  timer = setInterval(() => {
+    if (!paused) {
+      current = (current + 1) % facts.length;
+      showFact(current);
+    }
+  }, 10000);
+}
+
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    [now.getHours(), now.getMinutes(), now.getSeconds()]
+      .map(n => String(n).padStart(2, '0')).join(':');
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+let cx = -100, cy = -100, rx = -100, ry = -100;
+document.addEventListener('mousemove', e => { cx = e.clientX; cy = e.clientY; });
+(function animCursor() {
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  rx += (cx - rx) * 0.15;
+  ry += (cy - ry) * 0.15;
+  cursor.style.left = cx + 'px';
+  cursor.style.top = cy + 'px';
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animCursor);
+})();
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+  current = (current - 1 + facts.length) % facts.length;
+  showFact(current);
+  startTimer();
+});
+document.getElementById('nextBtn').addEventListener('click', () => {
+  current = (current + 1) % facts.length;
+  showFact(current);
+  startTimer();
+});
+document.getElementById('pauseBtn').addEventListener('click', () => {
+  paused = !paused;
+  const icon = document.getElementById('pauseIcon');
+  if (paused) {
+    icon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>';
+  } else {
+    icon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+    startTimer();
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') document.getElementById('nextBtn').click();
+  if (e.key === 'ArrowLeft') document.getElementById('prevBtn').click();
+  if (e.key === ' ') { e.preventDefault(); document.getElementById('pauseBtn').click(); }
+});
+
+setTimeout(() => {
+  resizeVC();
+  initParticles();
+  drawParticles();
+  showFact(0);
+  startTimer();
+}, 100);
+</script>
+</body>
+</html>
