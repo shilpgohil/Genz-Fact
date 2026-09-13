@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#F3EFE8" />
+  <title>Luma</title>
+  <style>
+    :root {
+      --bg: #F3EFE8;
+      --surface: #FFFCF7;
+      --text: #1A1916;
+      --muted: #6F6A62;
+      --faint: #A39E94;
+      --accent: #7A5428;
+      --accent-fill: #E4C39A;
+      --hairline: rgba(26, 25, 22, 0.08);
+      --danger: #E85D4C;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body { padding-bottom: 96px; }
+    h1, h2, .wordmark {
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 500;
+    }
+    button { font: inherit; }
+    .gate, .app { min-height: 100dvh; }
+    .gate {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 28px 80px;
+      text-align: center;
+    }
+    .wordmark { font-size: 34px; margin: 0 0 8px; }
+    .headline { font-size: 22px; margin: 0 0 12px; letter-spacing: -0.02em; }
+    .body { color: var(--muted); line-height: 1.45; max-width: 34rem; }
+    .btn {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 22px;
+      min-height: 48px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      margin-top: 28px;
+    }
+    .btn.ghost {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--hairline);
+    }
+    .fine { margin-top: 24px; color: var(--faint); font-size: 12px; }
+    header.top {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 18px 20px 8px;
+      position: sticky;
+      top: 0;
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(16px);
+      z-index: 5;
+    }
+    header.top h1 { margin: 0; font-size: 28px; }
+    header.top p { margin: 2px 0 0; color: var(--muted); font-size: 14px; }
+    .icon-btn {
+      width: 44px; height: 44px; border: 0; border-radius: 50%;
+      background: var(--surface); color: var(--text);
+    }
+    .section { padding: 8px 20px 16px; }
+    .section h2 { font-size: 18px; margin: 16px 0 10px; }
+    .h-scroll {
+      display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tile {
+      flex: 0 0 118px; height: 168px; border-radius: 12px; overflow: hidden;
+      background: #ddd8ce; position: relative;
+    }
+    .tile img, .grid img, .viewer img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .heart {
+      position: absolute; top: 6px; right: 6px; font-size: 12px; color: #E4C39A;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+      padding: 0 3px 24px;
+    }
+    .grid .cell { aspect-ratio: 1; background: #ddd8ce; overflow: hidden; }
+    .day {
+      padding: 16px 16px 8px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    nav.tabs {
+      position: fixed; left: 16px; right: 16px; bottom: 16px;
+      display: flex; justify-content: space-around;
+      background: color-mix(in srgb, var(--surface) 86%, transparent);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--hairline);
+      border-radius: 28px;
+      padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+      z-index: 10;
+    }
+    nav.tabs button {
+      flex: 1; border: 0; background: transparent; color: var(--muted);
+      padding: 8px 4px; font-size: 11px;
+    }
+    nav.tabs button.on { color: var(--text); font-weight: 600; }
+    .search {
+      margin: 8px 20px 12px;
+      width: calc(100% - 40px);
+      border: 1px solid var(--hairline);
+      border-radius: 18px;
+      padding: 12px 14px;
+      background: var(--surface);
+      font-size: 16px;
+    }
+    .empty { padding: 48px 28px; text-align: center; color: var(--muted); }
+    .viewer {
+      position: fixed; inset: 0; background: #000; z-index: 40;
+      display: flex; flex-direction: column;
+    }
+    .viewer .stage { flex: 1; display: flex; align-items: center; justify-content: center; }
+    .viewer img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .viewer .bar {
+      display: flex; justify-content: space-between; align-items: center;
+      color: #fff; padding: 12px 8px calc(12px + env(safe-area-inset-bottom));
+    }
+    .viewer .bar button { background: transparent; border: 0; color: #fff; min-width: 44px; min-height: 44px; }
+    .hidden { display: none !important; }
+    .moment {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3px;
+      border-radius: 18px; overflow: hidden; margin-bottom: 16px;
+      background: var(--surface);
+    }
+    .moment img { height: 120px; }
+    .moment .meta { grid-column: 1 / -1; padding: 12px 14px; }
+    .moment .meta b { display: block; }
+    .moment .meta span { color: var(--muted); font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div id="gate" class="gate">
+    <p class="wordmark">Luma</p>
+    <h1 class="headline">Your gallery, kept in this browser</h1>
+    <p class="body">Luma never uploads. Choose photos on this device. They stay in this tab until you close it — nothing is sent to a server.</p>
+    <button class="btn" id="choose">Choose photos</button>
+    <p class="fine">No account · No cloud · Files never leave this tab</p>
+    <input id="file" type="file" accept="image/*" multiple hidden />
+  </div>
+
+  <div id="app" class="app hidden">
+    <section id="tab-home">
+      <header class="top">
+        <div>
+          <h1>Luma</h1>
+          <p id="countLabel">0 items</p>
+        </div>
+        <button class="icon-btn" id="addMore" aria-label="Add photos">＋</button>
+      </header>
+      <div id="homeBody"></div>
+    </section>
+    <section id="tab-library" class="hidden">
+      <header class="top"><div><h1>Library</h1><p>Grouped by day</p></div></header>
+      <div id="libBody"></div>
+    </section>
+    <section id="tab-search" class="hidden">
+      <header class="top"><div><h1>Search</h1><p>Dates, names, favorites</p></div></header>
+      <input class="search" id="q" placeholder="August, yesterday, favorites…" />
+      <div id="searchBody"></div>
+    </section>
+    <section id="tab-albums" class="hidden">
+      <header class="top"><div><h1>Albums</h1><p>This session</p></div></header>
+      <div id="albumsBody" class="section"></div>
+    </section>
+    <nav class="tabs">
+      <button data-tab="home" class="on">Home</button>
+      <button data-tab="library">Library</button>
+      <button data-tab="search">Search</button>
+      <button data-tab="albums">Albums</button>
+    </nav>
+  </div>
+
+  <div id="viewer" class="viewer hidden">
+    <div class="bar">
+      <button id="closeViewer">Close</button>
+      <span id="viewerPos"></span>
+      <button id="favViewer">♥</button>
+    </div>
+    <div class="stage"><img id="viewerImg" alt="" /></div>
+    <div class="bar">
+      <button id="prev">Prev</button>
+      <button id="remove">Remove</button>
+      <button id="next">Next</button>
+    </div>
+  </div>
+
+  <script>
+    const state = { items: [], tab: "home", view: [] , index: 0 };
+    const $ = (id) => document.getElementById(id);
+    const fileInput = $("file");
+
+    const choose = () => fileInput.click();
+    $("choose").onclick = choose;
+    $("addMore").onclick = choose;
+
+    fileInput.onchange = async () => {
+      const files = [...fileInput.files];
+      fileInput.value = "";
+      for (const file of files) {
+        if (!file.type.startsWith("image/")) continue;
+        const url = URL.createObjectURL(file);
+        state.items.push({
+          id: crypto.randomUUID(),
+          name: file.name,
+          url,
+          size: file.size,
+          created: file.lastModified ? new Date(file.lastModified) : new Date(),
+          favorite: false,
+        });
+      }
+      state.items.sort((a, b) => b.created - a.created);
+      $("gate").classList.add("hidden");
+      $("app").classList.remove("hidden");
+      render();
+    };
+
+    document.querySelectorAll("nav.tabs button").forEach((btn) => {
+      btn.onclick = () => {
+        state.tab = btn.dataset.tab;
+        document.querySelectorAll("nav.tabs button").forEach((b) => b.classList.toggle("on", b === btn));
+        ["home", "library", "search", "albums"].forEach((tab) => {
+          $("tab-" + tab).classList.toggle("hidden", tab !== state.tab);
+        });
+        render();
+      };
+    });
+
+    $("q").oninput = render;
+
+    function formatCount(n) {
+      return n + (n === 1 ? " item" : " items");
+    }
+    function dayKey(d) {
+      return d.toDateString();
+    }
+    function dayLabel(d) {
+      return d.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+    }
+    function groups(list) {
+      const map = new Map();
+      for (const item of list) {
+        const key = dayKey(item.created);
+        if (!map.has(key)) map.set(key, []);
+        map.get(key).push(item);
+      }
+      return [...map.entries()];
+    }
+    function moments(list) {
+      if (list.length < 3) return [];
+      const sorted = [...list].sort((a, b) => a.created - b.created);
+      const clusters = [];
+      let cur = [sorted[0]];
+      for (let i = 1; i < sorted.length; i++) {
+        const gap = sorted[i].created - sorted[i - 1].created;
+        if (gap <= 3 * 60 * 60 * 1000) cur.push(sorted[i]);
+        else {
+          if (cur.length >= 3) clusters.push(cur);
+          cur = [sorted[i]];
+        }
+      }
+      if (cur.length >= 3) clusters.push(cur);
+      return clusters.reverse().slice(0, 6);
+    }
+    function search(query) {
+      const q = query.trim().toLowerCase();
+      if (!q) return state.items;
+      const now = new Date();
+      return state.items.filter((item) => {
+        const blob = (item.name + " " + dayLabel(item.created)).toLowerCase();
+        if (q === "favorites" || q === "favourite" || q === "favorite") return item.favorite;
+        if (q === "yesterday") {
+          const y = new Date(now); y.setDate(now.getDate() - 1);
+          return dayKey(item.created) === dayKey(y);
+        }
+        if (q === "today") return dayKey(item.created) === dayKey(now);
+        return blob.includes(q) || String(item.created.getFullYear()) === q;
+      });
+    }
+    function tile(item) {
+      return `<button class="tile" data-id="${item.id}"><img src="${item.url}" alt=""><span class="heart">${item.favorite ? "♥" : ""}</span></button>`;
+    }
+    function grid(list) {
+      if (!list.length) return `<div class="empty">Nothing matches.</div>`;
+      return groups(list).map(([key, items]) => `
+        <div class="day">${dayLabel(items[0].created)}</div>
+        <div class="grid">${items.map((item) => `<button class="cell" data-id="${item.id}"><img src="${item.url}" alt=""></button>`).join("")}</div>
+      `).join("");
+    }
+    function render() {
+      $("countLabel").textContent = formatCount(state.items.length);
+      const recent = state.items.slice(0, 12);
+      const moms = moments(state.items);
+      $("homeBody").innerHTML = `
+        <div class="section">
+          <h2>Recent</h2>
+          <div class="h-scroll">${recent.map(tile).join("")}</div>
+        </div>
+        <div class="section">
+          <h2>Moments</h2>
+          ${moms.length ? moms.map((cluster) => `
+            <div class="moment">
+              ${cluster.slice(0, 2).map((item) => `<img src="${item.url}" alt="">`).join("")}
+              <div class="meta"><b>${dayLabel(cluster[0].created)}</b><span>${formatCount(cluster.length)} taken close together</span></div>
+            </div>`).join("") : `<p class="body">Moments appear when several photos are captured within a few hours of each other.</p>`}
+        </div>`;
+      $("libBody").innerHTML = grid(state.items);
+      $("searchBody").innerHTML = grid(search($("q").value));
+      const favs = state.items.filter((i) => i.favorite);
+      $("albumsBody").innerHTML = `
+        <p class="body">Recents · ${formatCount(state.items.length)}</p>
+        <p class="body">Favorites · ${formatCount(favs.length)}</p>
+        <p class="fine">Device albums are not available in the browser. This is a local session only.</p>
+        <button class="btn ghost" id="chooseAgain">Choose more photos</button>`;
+      const again = $("chooseAgain");
+      if (again) again.onclick = choose;
+      document.querySelectorAll("[data-id]").forEach((el) => {
+        el.onclick = () => openViewer(el.dataset.id);
+      });
+    }
+    function openViewer(id) {
+      const list = state.tab === "search" ? search($("q").value) : state.items;
+      state.view = list;
+      state.index = Math.max(0, list.findIndex((i) => i.id === id));
+      $("viewer").classList.remove("hidden");
+      showView();
+    }
+    function showView() {
+      const item = state.view[state.index];
+      if (!item) { $("viewer").classList.add("hidden"); return; }
+      $("viewerImg").src = item.url;
+      $("viewerPos").textContent = (state.index + 1) + " / " + state.view.length;
+      $("favViewer").textContent = item.favorite ? "♥" : "♡";
+    }
+    $("closeViewer").onclick = () => $("viewer").classList.add("hidden");
+    $("prev").onclick = () => { state.index = (state.index + state.view.length - 1) % state.view.length; showView(); };
+    $("next").onclick = () => { state.index = (state.index + 1) % state.view.length; showView(); };
+    $("favViewer").onclick = () => {
+      const item = state.view[state.index];
+      item.favorite = !item.favorite;
+      showView(); render();
+    };
+    $("remove").onclick = () => {
+      const item = state.view[state.index];
+      if (!confirm("Remove from this Luma session? The file on your phone is not deleted.")) return;
+      state.items = state.items.filter((i) => i.id !== item.id);
+      URL.revokeObjectURL(item.url);
+      $("viewer").classList.add("hidden");
+      if (!state.items.length) {
+        $("app").classList.add("hidden");
+        $("gate").classList.remove("hidden");
+      }
+      render();
+    };
+  </script>
+</body>
+</html>

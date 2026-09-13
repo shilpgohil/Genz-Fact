@@ -23,13 +23,11 @@ cp -R build/web web-dist
 
 ## Live URL
 
-This repo is connected to Vercel (`genzfacts`). The current preview:
+**Public (no Vercel login):** https://eu4wgtuvb4rz.htmldrop.app/
 
-https://genzfacts-cqfjo7g2t-thesis-strength-analysers-projects.vercel.app
+The Vercel Git preview is behind Deployment Protection. Accounts that are not on the `genzfacts` Vercel team (for example `28sgphotos@gmail.com`) see “Request Sent” and cannot open it until a team owner approves. Use the public link above instead.
 
-PR alias:
+Vercel preview (team only):
 
 https://genzfacts-git-cursor-c10039-thesis-strength-analysers-projects.vercel.app
-
-If the page asks for Vercel/GitHub login, that is Deployment Protection on the project — sign in with the repo owner account. To make it public, turn off Deployment Protection in the Vercel project settings.
 

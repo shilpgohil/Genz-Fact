@@ -4,15 +4,13 @@ A premium, local-first smart photo gallery for Android, iOS, and the web.
 
 Photos stay on the device (or in this browser tab). No account, no cloud database, no backend.
 
-## Open in a browser
+## Open in a browser (no login)
 
-**Live preview:** [genzfacts-cqfjo7g2t-thesis-strength-analysers-projects.vercel.app](https://genzfacts-cqfjo7g2t-thesis-strength-analysers-projects.vercel.app)
+**Use this link on your phone:** [https://eu4wgtuvb4rz.htmldrop.app/](https://eu4wgtuvb4rz.htmldrop.app/)
 
-Stable PR alias: [genzfacts-git-cursor-c10039-thesis-strength-analysers-projects.vercel.app](https://genzfacts-git-cursor-c10039-thesis-strength-analysers-projects.vercel.app)
+Tap **Choose photos** and pick images. They stay in that tab and are never uploaded.
 
-Vercel Deployment Protection may ask you to sign in with the GitHub account that owns this repo. After that: tap **Choose photos**, pick images from your phone or computer. They stay in that tab and are never uploaded. Closing the tab clears the session.
-
-See [`docs/WEB.md`](docs/WEB.md).
+The Vercel preview is locked to the project’s Vercel team. If you see **Request Sent**, you are signed in as an account that is not on that team — that screen is expected. Use the public link above instead.
 
 ## What it does
 
