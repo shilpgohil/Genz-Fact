@@ -14,7 +14,15 @@ Photos stay on the device. No account, no cloud database, no backend.
 - Metadata search (`August`, `Yesterday`, `Videos`, `2025`, …)
 - Duplicate and cleanup suggestions — never deletes unless you confirm
 
-## Run
+## Install on a phone
+
+Luma is not on the App Store or Play Store. You cannot tap “Get” from this chat onto your device.
+
+**Android (direct APK):** download [`dist/luma-android.apk`](dist/luma-android.apk) on the phone, open the file, allow install from the browser, then open **Luma**. Use the 64-bit APK (almost every phone from 2017 on). Grant Photos / Videos (or selected photos).
+
+**iPhone:** Apple does not allow installing an unsigned `.ipa` from a website. You need a Mac, Xcode, and a cable. See the step-by-step in the pull request / agent notes: clone the `cursor/luma-smart-gallery-f0ce` branch, open `ios/Runner.xcworkspace`, set your Team under Signing, then `flutter run`.
+
+## Run from a computer
 
 ```bash
 flutter pub get
