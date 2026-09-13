@@ -4,9 +4,13 @@ A premium, local-first smart photo gallery for Android, iOS, and the web.
 
 Photos stay on the device (or in this browser tab). No account, no cloud database, no backend.
 
-## Use in a browser
+## Open in a browser
 
-Open the deployed web app, tap **Choose photos**, and pick images from your computer or phone. Luma organizes them locally in that tab. Closing the tab clears the session — nothing is uploaded.
+**Live preview:** [genzfacts-cqfjo7g2t-thesis-strength-analysers-projects.vercel.app](https://genzfacts-cqfjo7g2t-thesis-strength-analysers-projects.vercel.app)
+
+Stable PR alias: [genzfacts-git-cursor-c10039-thesis-strength-analysers-projects.vercel.app](https://genzfacts-git-cursor-c10039-thesis-strength-analysers-projects.vercel.app)
+
+Vercel Deployment Protection may ask you to sign in with the GitHub account that owns this repo. After that: tap **Choose photos**, pick images from your phone or computer. They stay in that tab and are never uploaded. Closing the tab clears the session.
 
 See [`docs/WEB.md`](docs/WEB.md).
 

@@ -20,3 +20,16 @@ cp -R build/web web-dist
 ```
 
 `web-dist/` is the deployable static output (Vercel `outputDirectory`, GitHub Pages, or any static host).
+
+## Live URL
+
+This repo is connected to Vercel (`genzfacts`). The current preview:
+
+https://genzfacts-cqfjo7g2t-thesis-strength-analysers-projects.vercel.app
+
+PR alias:
+
+https://genzfacts-git-cursor-c10039-thesis-strength-analysers-projects.vercel.app
+
+If the page asks for Vercel/GitHub login, that is Deployment Protection on the project — sign in with the repo owner account. To make it public, turn off Deployment Protection in the Vercel project settings.
+
