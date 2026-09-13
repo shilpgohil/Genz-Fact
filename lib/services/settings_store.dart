@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -64,9 +63,7 @@ class SettingsStore extends ChangeNotifier {
   static const _videosKey = 'luma.includeVideos';
   static const _collectionsKey = 'luma.collections';
 
-  AppSettings settings = AppSettings(
-    glass: Platform.isIOS ? GlassLevel.full : GlassLevel.reduced,
-  );
+  AppSettings settings = AppSettings(glass: defaultGlassLevel());
   List<LumaCollection> collections = const [];
 
   void load() {
@@ -77,11 +74,7 @@ class SettingsStore extends ChangeNotifier {
         ThemePreference.system,
       ),
       grid: _readEnum(GridDensity.values, _gridKey, GridDensity.regular),
-      glass: _readEnum(
-        GlassLevel.values,
-        _glassKey,
-        Platform.isIOS ? GlassLevel.full : GlassLevel.reduced,
-      ),
+      glass: _readEnum(GlassLevel.values, _glassKey, defaultGlassLevel()),
       reduceMotion: _prefs.getBool(_motionKey) ?? false,
       includeVideos: _prefs.getBool(_videosKey) ?? true,
     );
@@ -124,4 +117,12 @@ class SettingsStore extends ChangeNotifier {
     if (index == null || index < 0 || index >= values.length) return fallback;
     return values[index];
   }
+}
+
+GlassLevel defaultGlassLevel() {
+  if (kIsWeb) return GlassLevel.reduced;
+  return defaultTargetPlatform == TargetPlatform.iOS ||
+          defaultTargetPlatform == TargetPlatform.macOS
+      ? GlassLevel.full
+      : GlassLevel.reduced;
 }

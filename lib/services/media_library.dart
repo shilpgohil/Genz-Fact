@@ -7,6 +7,8 @@ import '../models/media_album.dart';
 import '../models/media_asset.dart';
 
 abstract class MediaLibrary {
+  LibraryAccessMode get accessMode;
+
   Future<LumaPermission> currentPermission();
   Future<LumaPermission> requestPermission();
   Future<void> openSystemSettings();
@@ -23,6 +25,12 @@ abstract class MediaLibrary {
   ImageProvider? thumbnailProvider(String id, {required int size});
   ImageProvider? previewProvider(String id);
   Future<String?> filePath(String id);
+
+  /// Blob/http URL for in-app playback. Null when [filePath] should be used.
+  String? playbackUrl(String id);
+
+  /// Original file bytes when a filesystem path is unavailable (web session).
+  Future<Uint8List?> originalBytes(String id);
 
   Future<void> favorite(String id, bool value);
   Future<List<String>> deleteIds(List<String> ids);

@@ -34,7 +34,9 @@ Exact groups from size+dimensions. Optional perceptual scan. No auto-delete.
 
 Device albums vs Luma collections. Native favorites when the OS supports them.
 
-## Next iteration (device QA)
+## Next iteration
+
+Web is deployable (`docs/WEB.md`). Remaining mobile work:
 
 - Profile scrolling on a 10k+ library
 - Tune thumbnail sizes per device pixel ratio

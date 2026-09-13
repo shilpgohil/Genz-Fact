@@ -66,8 +66,17 @@ class SettingsScreen extends StatelessWidget {
           const _Heading('Library'),
           ListTile(
             title: const Text('Permission'),
-            subtitle: Text(_permissionLabel(library.permission)),
-            trailing: library.permission == LumaPermission.limited
+            subtitle: Text(
+              library.isSessionLibrary
+                  ? 'Browser session — photos stay in this tab'
+                  : _permissionLabel(library.permission),
+            ),
+            trailing: library.isSessionLibrary
+                ? TextButton(
+                    onPressed: library.manageLimitedAccess,
+                    child: const Text('Add'),
+                  )
+                : library.permission == LumaPermission.limited
                 ? TextButton(
                     onPressed: library.manageLimitedAccess,
                     child: const Text('Manage'),
@@ -87,22 +96,36 @@ class SettingsScreen extends StatelessWidget {
             onTap: library.loadLibrary,
           ),
           const _Heading('Privacy'),
-          const ListTile(
-            title: Text('Photos stay on this device'),
+          ListTile(
+            title: Text(
+              library.isSessionLibrary
+                  ? 'Photos stay in this browser tab'
+                  : 'Photos stay on this device',
+            ),
             subtitle: Text(
-              'Luma does not create an account, upload your library, or talk to a Luma server. Search and moments use metadata already on the phone.',
+              library.isSessionLibrary
+                  ? 'Luma does not create an account or upload your library. Search and moments use metadata from the files you chose in this tab.'
+                  : 'Luma does not create an account, upload your library, or talk to a Luma server. Search and moments use metadata already on the phone.',
             ),
           ),
           const _Heading('About'),
-          const ListTile(
-            title: Text('Luma'),
-            subtitle: Text('1.0.0 · Local-first gallery'),
+          ListTile(
+            title: const Text('Luma'),
+            subtitle: Text(
+              library.isSessionLibrary
+                  ? '1.0.0 · Local-first gallery · Web'
+                  : '1.0.0 · Local-first gallery',
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(LumaTokens.space20),
             child: GlassButton(
-              label: 'Request photo access',
-              onPressed: library.requestAccess,
+              label: library.isSessionLibrary
+                  ? 'Choose photos'
+                  : 'Request photo access',
+              onPressed: library.isSessionLibrary
+                  ? library.manageLimitedAccess
+                  : library.requestAccess,
             ),
           ),
         ],

@@ -70,6 +70,7 @@ class LibraryController extends ChangeNotifier with WidgetsBindingObserver {
   AppSettings get appSettings => _settings.settings;
   List<MediaAsset> get assets => _assets;
   List<LumaCollection> get collections => _settings.collections;
+  bool get isSessionLibrary => _library.accessMode == LibraryAccessMode.session;
 
   List<MediaAsset> get visibleAssets {
     if (_settings.settings.includeVideos) return _assets;

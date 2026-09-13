@@ -44,6 +44,22 @@ void main() {
     expect(find.text('Allow photo access'), findsOneWidget);
   });
 
+  testWidgets('permission panel explains browser session library', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _wrap(
+        PermissionPanel(
+          permission: LumaPermission.notDetermined,
+          accessMode: LibraryAccessMode.session,
+          onAllow: () {},
+        ),
+      ),
+    );
+    expect(find.text('Choose photos'), findsOneWidget);
+    expect(find.textContaining('never uploads'), findsOneWidget);
+  });
+
   testWidgets('search field accepts input', (tester) async {
     final controller = TextEditingController();
     await tester.pumpWidget(_wrap(LumaSearchField(controller: controller)));

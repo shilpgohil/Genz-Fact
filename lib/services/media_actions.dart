@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../core/errors/luma_exception.dart';
+import '../models/app_models.dart';
 import '../services/library_controller.dart';
 import '../services/selection_controller.dart';
 
@@ -14,7 +15,21 @@ class MediaActions {
     final files = <XFile>[];
     for (final id in ids) {
       final path = await library.library.filePath(id);
-      if (path != null) files.add(XFile(path));
+      if (path != null) {
+        files.add(XFile(path));
+        continue;
+      }
+      final bytes = await library.library.originalBytes(id);
+      final asset = library.byId(id);
+      if (bytes != null && bytes.isNotEmpty) {
+        files.add(
+          XFile.fromData(
+            bytes,
+            name: asset?.title ?? id,
+            mimeType: asset?.mimeType,
+          ),
+        );
+      }
     }
     if (!context.mounted) return;
     if (files.isEmpty) {
@@ -30,16 +45,25 @@ class MediaActions {
     }
   }
 
-  static Future<bool> confirmDelete(BuildContext context, int count) async {
+  static Future<bool> confirmDelete(
+    BuildContext context,
+    int count, {
+    LibraryAccessMode accessMode = LibraryAccessMode.device,
+  }) async {
+    final session = accessMode == LibraryAccessMode.session;
     final result = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Delete from device?'),
+          title: Text(session ? 'Remove from Luma?' : 'Delete from device?'),
           content: Text(
-            count == 1
-                ? 'This uses the system photo library. You can still cancel in the next system prompt if one appears.'
-                : 'Delete $count items from the photo library? The system may ask you to confirm.',
+            session
+                ? (count == 1
+                      ? 'This removes the item from this browser session. The file on your computer is not deleted.'
+                      : 'Remove $count items from this browser session? Files on your computer are not deleted.')
+                : (count == 1
+                      ? 'This uses the system photo library. You can still cancel in the next system prompt if one appears.'
+                      : 'Delete $count items from the photo library? The system may ask you to confirm.'),
           ),
           actions: [
             TextButton(
@@ -65,7 +89,11 @@ class MediaActions {
   ) async {
     final list = ids.toList();
     if (list.isEmpty) return;
-    final ok = await confirmDelete(context, list.length);
+    final ok = await confirmDelete(
+      context,
+      list.length,
+      accessMode: library.library.accessMode,
+    );
     if (!ok || !context.mounted) return;
     try {
       final deleted = await library.delete(list);

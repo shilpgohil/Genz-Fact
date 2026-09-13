@@ -50,6 +50,7 @@ class _Root extends StatelessWidget {
       LibraryPhase.needsPermission => Scaffold(
         body: PermissionPanel(
           permission: library.permission,
+          accessMode: library.library.accessMode,
           onAllow: library.permission == LumaPermission.limited
               ? () {
                   // Limited users can enter the app with the current selection.

@@ -16,6 +16,9 @@ extension LumaPermissionX on LumaPermission {
 
 enum LibraryPhase { booting, needsPermission, indexing, ready, empty, error }
 
+/// Device camera roll vs a browser/session library the user picked locally.
+enum LibraryAccessMode { device, session }
+
 enum ThemePreference { system, light, dark }
 
 enum GridDensity { comfortable, regular, compact }

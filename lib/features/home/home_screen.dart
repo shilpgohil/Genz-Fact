@@ -75,6 +75,12 @@ class HomeScreen extends StatelessWidget {
                     ),
                     icon: const Icon(Icons.auto_awesome_outlined),
                   ),
+                  if (library.isSessionLibrary)
+                    IconButton(
+                      tooltip: 'Add photos',
+                      onPressed: library.manageLimitedAccess,
+                      icon: const Icon(Icons.add_photo_alternate_outlined),
+                    ),
                   IconButton(
                     tooltip: 'Settings',
                     onPressed: () => Navigator.push(
@@ -119,10 +125,16 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         if (assets.isEmpty)
-          const SliverFillRemaining(
+          SliverFillRemaining(
             child: EmptyState(
               title: 'No photos yet',
-              message: 'When this library has photos or videos, Luma will group them into moments and categories automatically.',
+              message: library.isSessionLibrary
+                  ? 'Choose photos from this device. Luma keeps them in this tab and does not upload them.'
+                  : 'When this library has photos or videos, Luma will group them into moments and categories automatically.',
+              actionLabel: library.isSessionLibrary ? 'Choose photos' : null,
+              onAction: library.isSessionLibrary
+                  ? library.manageLimitedAccess
+                  : null,
             ),
           )
         else ...[
@@ -130,7 +142,7 @@ class HomeScreen extends StatelessWidget {
             const SliverToBoxAdapter(
               child: SectionHeader(
                 title: 'Recent',
-                subtitle: 'Latest on this device',
+                subtitle: 'Latest in this library',
               ),
             ),
             SliverToBoxAdapter(

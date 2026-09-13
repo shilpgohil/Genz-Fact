@@ -45,6 +45,12 @@ class GalleryScreen extends StatelessWidget {
                 : () => _jumpToMonth(context, library),
             icon: const Icon(Icons.calendar_month_outlined),
           ),
+          if (library.isSessionLibrary)
+            IconButton(
+              tooltip: 'Add photos',
+              onPressed: library.manageLimitedAccess,
+              icon: const Icon(Icons.add_photo_alternate_outlined),
+            ),
         ],
       ),
       body: Builder(
@@ -53,9 +59,15 @@ class GalleryScreen extends StatelessWidget {
             return const LoadingState();
           }
           if (assets.isEmpty) {
-            return const EmptyState(
+            return EmptyState(
               title: 'Library is empty',
-              message: 'Photos and videos on this device will appear here, grouped by day.',
+              message: library.isSessionLibrary
+                  ? 'Choose photos to organize them here. Nothing is uploaded.'
+                  : 'Photos and videos on this device will appear here, grouped by day.',
+              actionLabel: library.isSessionLibrary ? 'Choose photos' : null,
+              onAction: library.isSessionLibrary
+                  ? library.manageLimitedAccess
+                  : null,
             );
           }
           return Stack(

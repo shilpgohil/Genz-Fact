@@ -4,7 +4,7 @@ This file is the source of truth for coding agents. Read it before changing the 
 
 ## Project purpose
 
-Luma is a premium, local-first smart photo gallery for Android and iOS. It organizes the device photo library without accounts, backends, cloud databases, or uploading photos. Intelligence is computed on-device from real metadata. Never fake AI, fake photos, fake search, or fake storage stats.
+Luma is a premium, local-first smart photo gallery for Android, iOS, and the web. It organizes photos without accounts, backends, cloud databases, or uploading files. Intelligence is computed locally from real metadata. Never fake AI, fake photos, fake search, or fake storage stats.
 
 Product principle: *Don't make me manage my photos. Make the gallery manage itself.*
 
@@ -12,7 +12,7 @@ Product principle: *Don't make me manage my photos. Make the gallery manage itse
 
 - Flutter 3.47 (Dart 3.13), Material 3 used only as a substrate — visual language is custom Luma, not generic Material.
 - State: `provider` + `ChangeNotifier` (`LibraryController`, `SelectionController`, `SettingsStore`).
-- Photo library: `photo_manager` + `photo_manager_image_provider`.
+- Photo library: `photo_manager` + `photo_manager_image_provider` on Android/iOS. On web, `SessionMediaLibrary` + a local file picker (files never leave the tab).
 - Local settings: `shared_preferences`.
 - Share: `share_plus`.
 - Video playback: `video_player`.
@@ -24,7 +24,7 @@ Do not add Firebase, networking clients, analytics, or account SDKs.
 
 - UI, engines, and platform access stay separated.
 - Pure Dart engines (`moment_engine`, `search_engine`, `duplicate_engine`, `category_engine`, `date_grouping`, `health_engine`) must stay testable without plugins.
-- `MediaLibrary` is the only photo-platform boundary. App code uses `MediaAsset` ids, never raw `AssetEntity` except inside `PhotoManagerLibrary` and thumbnail widgets.
+- `MediaLibrary` is the only photo-platform boundary. App code uses `MediaAsset` ids, never raw `AssetEntity` except inside `PhotoManagerLibrary` and thumbnail widgets. Web uses `SessionMediaLibrary` via `createMediaLibrary()`.
 - Do not load full-resolution images in grids. Thumbnails only.
 - Do not copy the user's library into app storage.
 - Never delete media automatically. Confirm destructive actions. Prefer native delete APIs.
@@ -62,7 +62,7 @@ Add a package only when it solves a real problem. Current reasons:
 
 | Package | Why |
 | --- | --- |
-| photo_manager | Device photo library, permissions, albums, delete, favorite |
+| photo_manager | Device photo library, permissions, albums, delete, favorite (Android/iOS) |
 | photo_manager_image_provider | Efficient thumbnail `ImageProvider` |
 | provider | Consistent, simple DI/state |
 | shared_preferences | Theme/grid/motion settings |

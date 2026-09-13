@@ -43,7 +43,7 @@ Not claimed: people/selfies, OCR, semantic “beach/dog” search, invented even
 
 ## Privacy copy (must remain true)
 
-- Photos stay on the device.
+- Photos stay on the device (Android/iOS) or in this browser tab (web).
 - No account.
 - No backend.
 - No upload required.

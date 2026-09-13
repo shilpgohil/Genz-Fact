@@ -22,6 +22,9 @@ class FakeMediaLibrary implements MediaLibrary {
   final favorites = <String, bool>{};
 
   @override
+  LibraryAccessMode get accessMode => LibraryAccessMode.device;
+
+  @override
   Future<LumaPermission> currentPermission() async => permission;
 
   @override
@@ -73,6 +76,12 @@ class FakeMediaLibrary implements MediaLibrary {
 
   @override
   Future<String?> filePath(String id) async => null;
+
+  @override
+  String? playbackUrl(String id) => null;
+
+  @override
+  Future<Uint8List?> originalBytes(String id) async => null;
 
   @override
   Future<void> favorite(String id, bool value) async {

@@ -3,7 +3,7 @@
 ## Environment
 
 - This agent runs on Linux. `flutter test` / `flutter analyze` are the verification path. iOS Simulator and a physical photo library are not available here.
-- `photo_manager` is a no-op/error on desktop; the app is intended for Android/iOS devices.
+- `photo_manager` is a no-op/error on desktop; the app is intended for Android/iOS devices. The **web** build uses a local file picker instead of the camera roll.
 
 ## Platform limits
 
@@ -14,6 +14,7 @@
 - Screenshot detection is heuristic (path/title/subtype), not CV.
 - Portrait-like is iOS depth subtype only.
 - Limited photo access: the app sees only what the OS grants.
+- Web: no persistent library; videos in the session may not show a still thumbnail; large picks can use a lot of RAM.
 
 ## Product limits
 

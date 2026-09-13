@@ -5,7 +5,7 @@
 1. **Widgets / features** — screens and reusable UI. They read `LibraryController` and `SettingsStore` via `provider`.
 2. **Controllers** — `LibraryController` owns permission, indexing, derived collections, size backfill, duplicate scan progress. `SelectionController` owns multi-select.
 3. **Engines** — pure functions on `List<MediaAsset>`. No plugins, no `BuildContext`.
-4. **MediaLibrary** — async interface. `PhotoManagerLibrary` is the device adapter. Tests use `FakeMediaLibrary`.
+4. **MediaLibrary** — async interface. `PhotoManagerLibrary` is the device adapter. `SessionMediaLibrary` is the browser adapter (user-picked files, in-tab only). Tests use `FakeMediaLibrary` / `SessionMediaLibrary`.
 
 ## Indexing
 

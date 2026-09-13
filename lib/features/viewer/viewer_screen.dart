@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
@@ -9,6 +7,7 @@ import '../../core/theme/luma_tokens.dart';
 import '../../models/media_asset.dart';
 import '../../services/library_controller.dart';
 import '../../services/media_actions.dart';
+import '../../services/open_video_player.dart';
 import '../../widgets/metadata_sheet.dart';
 
 class ViewerScreen extends StatefulWidget {
@@ -210,7 +209,11 @@ class _BottomBar extends StatelessWidget {
                   icon: Icons.delete_outline_rounded,
                   label: 'Delete',
                   onTap: () async {
-                    final ok = await MediaActions.confirmDelete(context, 1);
+                    final ok = await MediaActions.confirmDelete(
+                      context,
+                      1,
+                      accessMode: library.library.accessMode,
+                    );
                     if (!ok || !context.mounted) return;
                     try {
                       await library.delete([asset.id]);
@@ -366,11 +369,12 @@ class _VideoBodyState extends State<_VideoBody> {
   }
 
   Future<void> _init() async {
-    final path = await context.read<LibraryController>().library.filePath(
-      widget.assetId,
-    );
-    if (path == null || !mounted) return;
-    final controller = VideoPlayerController.file(File(path));
+    final library = context.read<LibraryController>().library;
+    final url = library.playbackUrl(widget.assetId);
+    final path = url == null ? await library.filePath(widget.assetId) : null;
+    if (!mounted) return;
+    final controller = createVideoController(path: path, url: url);
+    if (controller == null) return;
     try {
       await controller.initialize();
     } catch (_) {

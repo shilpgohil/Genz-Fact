@@ -6,6 +6,10 @@ analyzer:
     - android/**
     - ios/**
     - archive/**
+    - web-dist/**
+    - lib/services/browser_file_picker_web.dart
+    - lib/services/create_media_library_web.dart
+    - web/**
 
 linter:
   rules:

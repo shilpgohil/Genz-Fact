@@ -1,12 +1,19 @@
 # Luma
 
-A premium, local-first smart photo gallery for Android and iOS.
+A premium, local-first smart photo gallery for Android, iOS, and the web.
 
-Photos stay on the device. No account, no cloud database, no backend.
+Photos stay on the device (or in this browser tab). No account, no cloud database, no backend.
+
+## Use in a browser
+
+Open the deployed web app, tap **Choose photos**, and pick images from your computer or phone. Luma organizes them locally in that tab. Closing the tab clears the session — nothing is uploaded.
+
+See [`docs/WEB.md`](docs/WEB.md).
 
 ## What it does
 
-- Reads the real camera roll (with system permission)
+- Reads the real camera roll on Android/iOS (with system permission)
+- On web, organizes files you choose in this tab
 - Fast date-grouped library with thumbnails
 - Immersive viewer (zoom, swipe, video, share, favorite, delete)
 - Moments clustered from capture times
@@ -16,20 +23,17 @@ Photos stay on the device. No account, no cloud database, no backend.
 
 ## Install on a phone
 
-Luma is not on the App Store or Play Store. You cannot tap “Get” from this chat onto your device.
+**Android (direct APK):** download [`dist/luma-android.apk`](dist/luma-android.apk) on the phone, open the file, allow install from the browser, then open **Luma**.
 
-**Android (direct APK):** download [`dist/luma-android.apk`](dist/luma-android.apk) on the phone, open the file, allow install from the browser, then open **Luma**. Use the 64-bit APK (almost every phone from 2017 on). Grant Photos / Videos (or selected photos).
-
-**iPhone:** Apple does not allow installing an unsigned `.ipa` from a website. Direct USB install still needs a Mac. The supported no-cable path is **TestFlight** (paid Apple Developer Program + Mac upload). See [`docs/TESTFLIGHT.md`](docs/TESTFLIGHT.md).
+**iPhone:** Apple does not allow installing an unsigned `.ipa` from a website. See [`docs/TESTFLIGHT.md`](docs/TESTFLIGHT.md).
 
 ## Run from a computer
 
 ```bash
 flutter pub get
-flutter run
+flutter run                 # Android / iOS
+flutter run -d chrome       # web
 ```
-
-iOS: grant Photos access when asked. Android 13+: grant photos/videos (or selected photos).
 
 ## Quality
 

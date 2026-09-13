@@ -13,6 +13,9 @@ import '../models/media_asset.dart';
 import 'media_library.dart';
 
 class PhotoManagerLibrary implements MediaLibrary {
+  @override
+  LibraryAccessMode get accessMode => LibraryAccessMode.device;
+
   final Map<String, AssetEntity> _entities = {};
   final Map<String, AssetPathEntity> _paths = {};
   final List<VoidCallback> _listeners = [];
@@ -231,6 +234,12 @@ class PhotoManagerLibrary implements MediaLibrary {
       ),
     );
   }
+
+  @override
+  String? playbackUrl(String id) => null;
+
+  @override
+  Future<Uint8List?> originalBytes(String id) async => null;
 
   @override
   Future<String?> filePath(String id) async {

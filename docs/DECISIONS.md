@@ -32,6 +32,10 @@ Keeps deletes behind the system confirmation UI. Safer and better aligned with â
 
 Device albums come from the OS. Luma collections are local id lists. UI labels them separately.
 
+## Web session library
+
+Browsers have no camera-roll API equivalent to `photo_manager`. The web build uses `SessionMediaLibrary`: the user picks local files, Luma organizes them in this tab, and closing the tab clears the session. Files are not uploaded.
+
 ## TestFlight is owner-side
 
 This environment cannot upload to TestFlight. Distribution uses the ownerâ€™s paid Apple Developer Program team and a Mac (see `docs/TESTFLIGHT.md`).

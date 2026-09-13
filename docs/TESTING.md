@@ -11,6 +11,7 @@
 | Categories | `test/category_engine_test.dart` |
 | Health | `test/health_engine_test.dart` |
 | Selection | `test/selection_controller_test.dart` |
+| Session / web library | `test/session_media_library_test.dart` |
 
 Fixtures live in `test/helpers/media_fixtures.dart`. They must not use network images.
 
