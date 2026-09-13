@@ -32,6 +32,12 @@ Keeps deletes behind the system confirmation UI. Safer and better aligned with �
 
 Device albums come from the OS. Luma collections are local id lists. UI labels them separately.
 
-## Previous repo contents
+## TestFlight is owner-side
+
+This environment cannot upload to TestFlight. Distribution uses the owner’s paid Apple Developer Program team and a Mac (see `docs/TESTFLIGHT.md`).
+
+## Export compliance
+
+`ITSAppUsesNonExemptEncryption` is `false`. Luma does not implement custom non-exempt cryptography; standard TLS and hashing used by dependencies are treated as exempt. Revisit this if you add your own crypto.
 
 This GitHub repo originally held a static “Genz Facts” page. It is preserved under `archive/genz-facts/` and is not part of the app.

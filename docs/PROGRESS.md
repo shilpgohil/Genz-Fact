@@ -25,6 +25,7 @@ Luma is a real Flutter app (Android + iOS) with a working local-first vertical s
 
 ### Remains
 - Run on a physical iPhone/Android with a real photo library (this environment is Linux)
+- TestFlight: owner must enroll in the Apple Developer Program and upload from a Mac (`docs/TESTFLIGHT.md`)
 - Custom branded store icons (default Flutter launcher)
 - Persist perceptual hashes across launches
 - Optional future on-device ML (people/scenes) — not claimed
